@@ -47,7 +47,6 @@ func DecodeList(str string, valid []bool) ([]interface{}, error) {
 			ret = append(ret, t)
 		} else if v == "l" {
 			start := i
-			fmt.Println("sdsdsd")
 			var temp string = ""
 			cnt := 0
 			for {
@@ -72,6 +71,7 @@ func DecodeList(str string, valid []bool) ([]interface{}, error) {
 			}
 			ret = append(ret, res)
 		} else if v == "d" {
+			start := i
 			var temp string = ""
 			cnt := 0
 			for {
@@ -79,7 +79,6 @@ func DecodeList(str string, valid []bool) ([]interface{}, error) {
 				temp += string(v)
 				if !valid[i] && (v == "l" || v == "d") {
 					cnt++
-					i++
 				}
 				if !valid[i] && v == "e" {
 					cnt--
@@ -87,8 +86,10 @@ func DecodeList(str string, valid []bool) ([]interface{}, error) {
 						break
 					}
 				}
+				i++
 			}
-			res, err := DecodeDictionary(temp, valid)
+			end := i
+			res, err := DecodeDictionary(temp[1:len(temp)-1], valid[start+1:end])
 			if err != nil {
 				return nil, err
 			}
@@ -114,19 +115,20 @@ func DecodeList(str string, valid []bool) ([]interface{}, error) {
 	return ret, nil
 }
 
-func DecodeDictionary(str string, valid []bool) (map[interface{}]interface{}, error) {
-	m := make(map[interface{}]interface{})
+func DecodeDictionary(str string, valid []bool) (map[string]interface{}, error) {
+	m := make(map[string]interface{})
 	k := true
-	var key interface{}
+	var key string
 	var value interface{}
-	for i, v := range str {
-		if v == 'i' {
+	for i := 0; i < len(str); i++ {
+		v := string(str[i])
+		if v == "i" {
 			var temp string = ""
 			for {
-				v = rune(str[i])
+				v = string(str[i])
 				temp += string(v)
 				i++
-				if v == 'e' {
+				if v == "e" {
 					break
 				}
 			}
@@ -136,80 +138,86 @@ func DecodeDictionary(str string, valid []bool) (map[interface{}]interface{}, er
 			}
 			if k {
 				k = !k
-				key = t
+				key = string(t)
 				value = nil
 			} else if !k {
 				k = !k
 				value = t
 				m[key] = value
-				key = nil
-				value = nil
 			}
 		}
-		if v == 'l' {
+		if v == "l" {
 			var temp string = ""
 			cnt := 0
+			start := i
 			for {
-				v = rune(str[i])
+				v = string(str[i])
 				temp += string(v)
-				if !valid[i] && (v == 'l' || v == 'd') {
+				if !valid[i] && (v == "l" || v == "d") {
+					cnt++
+				}
+				if !valid[i] && v == "e" {
+					cnt--
+					if cnt == 0 {
+						break
+					}
+				}
+				i++
+			}
+			end := i
+			t, err := DecodeList(temp[1:len(temp)-1], valid[start+1:end])
+			if err != nil {
+				return nil, err
+			}
+			if k {
+				k = !k
+				temp_res := ""
+				for _, v := range t {
+					temp_res += v.(string)
+				}
+				key = string(temp_res)
+				value = nil
+			} else if !k {
+				k = !k
+				value = t
+				m[key] = value
+			}
+		}
+		if v == "d" {
+			var temp string = ""
+			cnt := 0
+			start := i
+			for {
+				v = string(str[i])
+				temp += string(v)
+				if !valid[i] && (v == "l" || v == "d") {
 					cnt++
 					i++
 				}
-				if !valid[i] && v == 'e' {
+				if !valid[i] && v == "e" {
 					cnt--
 					if cnt == 0 {
 						break
 					}
 				}
 			}
-			t, err := DecodeList(temp, valid)
+			end := i
+			t, err := DecodeDictionary(temp[1:len(temp)-1], valid[start+1:end])
 			if err != nil {
 				return nil, err
 			}
 			if k {
 				k = !k
-				key = t
+				temp_res := ""
+				for _, v := range t {
+					temp_res += v.(string)
+				}
+				key = string(temp_res)
 				value = nil
 			} else if !k {
 				k = !k
 				value = t
 				m[key] = value
-				key = nil
-				value = nil
-			}
-		}
-		if v == 'd' {
-			var temp string = ""
-			cnt := 0
-			for {
-				v = rune(str[i])
-				temp += string(v)
-				if !valid[i] && (v == 'l' || v == 'd') {
-					cnt++
-					i++
-				}
-				if !valid[i] && v == 'e' {
-					cnt--
-					if cnt == 0 {
-						break
-					}
-				}
-			}
-			t, err := DecodeDictionary(temp, valid)
-			if err != nil {
-				return nil, err
-			}
-			if k {
-				k = !k
-				key = t
-				value = nil
-			} else if !k {
-				k = !k
-				value = t
-				m[key] = value
-				key = nil
-				value = nil
 			}
 		} else {
 			t, err := strconv.Atoi(string(v))
@@ -230,8 +238,6 @@ func DecodeDictionary(str string, valid []bool) (map[interface{}]interface{}, er
 					k = !k
 					value = res
 					m[key] = value
-					key = nil
-					value = nil
 				}
 				i--
 			}
