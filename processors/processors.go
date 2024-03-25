@@ -2,6 +2,7 @@ package processors
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -27,14 +28,15 @@ func DecodeInt(str string) (string, error) {
 
 func DecodeList(str string, valid []bool) ([]interface{}, error) {
 	var ret []interface{}
-	for i, v := range str {
-		if v == 'i' {
+	for i := 0; i < len(str); i++ {
+		v := string(str[i])
+		if v == "i" {
 			var temp string = ""
 			for {
-				v = rune(str[i])
+				v = string(str[i])
 				temp += string(v)
 				i++
-				if v == 'e' {
+				if v == "e" {
 					break
 				}
 			}
@@ -43,39 +45,43 @@ func DecodeList(str string, valid []bool) ([]interface{}, error) {
 				return nil, err
 			}
 			ret = append(ret, t)
-		} else if v == 'l' {
+		} else if v == "l" {
+			start := i
+			fmt.Println("sdsdsd")
 			var temp string = ""
 			cnt := 0
 			for {
-				v = rune(str[i])
+				v = string(str[i])
+				fmt.Println(v)
 				temp += string(v)
-				if !valid[i] && (v == 'l' || v == 'd') {
+				if !valid[i] && (v == "l" || v == "d") {
 					cnt++
-					i++
 				}
-				if !valid[i] && v == 'e' {
+				if !valid[i] && v == "e" {
 					cnt--
 					if cnt == 0 {
 						break
 					}
 				}
+				i++
 			}
-			res, err := DecodeList(temp, valid)
+			end := i
+			res, err := DecodeList(temp[1:len(temp)-1], valid[start+1:end])
 			if err != nil {
 				return nil, err
 			}
 			ret = append(ret, res)
-		} else if v == 'd' {
+		} else if v == "d" {
 			var temp string = ""
 			cnt := 0
 			for {
-				v = rune(str[i])
+				v = string(str[i])
 				temp += string(v)
-				if !valid[i] && (v == 'l' || v == 'd') {
+				if !valid[i] && (v == "l" || v == "d") {
 					cnt++
 					i++
 				}
-				if !valid[i] && v == 'e' {
+				if !valid[i] && v == "e" {
 					cnt--
 					if cnt == 0 {
 						break
@@ -91,7 +97,8 @@ func DecodeList(str string, valid []bool) ([]interface{}, error) {
 			t, err := strconv.Atoi(string(v))
 			if err == nil {
 				var temp string = ""
-				for ; i <= (i + t + 1); i++ {
+				lim := i + t + 2
+				for ; i < lim; i++ {
 					temp += string(str[i])
 				}
 				res, err := DecodeString(temp)

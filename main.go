@@ -27,12 +27,12 @@ func main() {
 	//decoding the Bencoded value
 
 	//constructing a valid array of the same length as input string
-	valid := make([]bool, len("l4:spami42ee"))
+	// valid := make([]bool, len("l4:spaml4:spameeli23eei23e"))
 
-	//marking the integers and strings
-	processors.MarkStringAndInts("l4:spami42ee", &valid)
-	fmt.Println(valid)
-	// fmt.Println(processors.DecodeList("l4:spami42ee", valid))
+	// //marking the integers and strings
+	// processors.MarkStringAndInts("l4:spaml4:spameeli23eei23e", &valid)
+	// // fmt.Println(valid)
+	// fmt.Println(processors.DecodeList("l4:spaml4:spameeli23eei23e", valid))
 	fmt.Println(input)
 	fmt.Println("ended")
 }
