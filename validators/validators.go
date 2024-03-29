@@ -1,7 +1,6 @@
 package validators
 
 import (
-	"fmt"
 	"strconv"
 )
 
@@ -33,9 +32,6 @@ func IsValidInt(str string) bool {
 	//tried something funny kek
 	if str[0] != 'i' || str[len(str)-1] != 'e' || (func() bool {
 		_, err := strconv.Atoi(str[1 : len(str)-1])
-		if err != nil { //delete this later
-			fmt.Println(str)
-		}
 		return err != nil
 	}()) {
 		return false

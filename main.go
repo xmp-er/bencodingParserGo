@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
@@ -38,10 +39,17 @@ func main() {
 
 	result, err := processors.Decode(input, valid)
 
+	//converting to json
+	json_res, err := json.Marshal(result)
+	if err != nil {
+		fmt.Println("Error in converting to json ", err)
+		return
+	}
+
 	if err != nil {
 		fmt.Println(err)
 	} else {
 		fmt.Println("The Decoded Bencoded string is :")
-		fmt.Println(result)
+		fmt.Println(string(json_res))
 	}
 }
