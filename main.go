@@ -12,6 +12,7 @@ import (
 )
 
 func Encode_bencoded_val([]byte) (string, error) {
+	//temp
 }
 
 func Decode_bencoded_val_as_interface(input string) ([]interface{}, error) {
