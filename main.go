@@ -11,8 +11,43 @@ import (
 	"github.com/xmp-er/bencodingParserGo/validators"
 )
 
-func main() {
+func Encode_bencoded_val([]byte) (string, error) {
+}
 
+func Decode_bencoded_val_as_interface(input string) ([]interface{}, error) {
+	//constructing a valid array of the same length as input string
+	valid := make([]bool, len(input))
+
+	// //marking the integers and strings
+	processors.MarkStringAndInts(input, &valid)
+
+	result, err := processors.Decode(input, valid)
+
+	if err != nil {
+		fmt.Println("Error in decoding the Bencoded value ", err)
+		return nil, err
+	}
+
+	return result, nil
+}
+
+func Decode_bencoded_val_as_JSON(input string) ([]byte, error) {
+	result, err := Decode_bencoded_val_as_interface(input)
+
+	if err != nil {
+		fmt.Println("Error in decoding value ", err)
+		return nil, err
+	}
+
+	json_res, err := json.Marshal(result)
+	if err != nil {
+		fmt.Println("Error in converting to json ", err)
+		return nil, err
+	}
+	return json_res, nil
+}
+
+func Print_Decoded_bencoded_val() {
 	var input string = ""
 	scanner := bufio.NewScanner(os.Stdin)
 
@@ -38,6 +73,11 @@ func main() {
 	processors.MarkStringAndInts(input, &valid)
 
 	result, err := processors.Decode(input, valid)
+
+	if err != nil {
+		fmt.Println("Error in decoding the Bencoded value ", err)
+		return
+	}
 
 	//converting to json
 	json_res, err := json.Marshal(result)
