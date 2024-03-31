@@ -11,7 +11,7 @@ import (
 	"github.com/xmp-er/bencodingParserGo/validators"
 )
 
-// Encodes bencoded value in JSON format and returns a string
+// Encode_bencoded_val takes a byte slice of JSON and returns its bencoded string representation along with any error encountered.
 func Encode_bencoded_val(input []byte) (string, error) {
 	var decoded_res map[string]interface{} //decoded result
 
@@ -34,12 +34,12 @@ func Encode_bencoded_val(input []byte) (string, error) {
 	return result, nil
 }
 
-// Decodes bencoded value and returns a interface array
+// Decode_bencoded_val_as_interface takes a bencoded string and decodes it into an array of interfaces.
 func Decode_bencoded_val_as_interface(input string) ([]interface{}, error) {
 	//constructing a valid array of the same length as input string
 	valid := make([]bool, len(input))
 
-	// //marking the integers and strings
+	//marking the integers and strings
 	processors.MarkStringAndInts(input, &valid)
 
 	result, err := processors.Decode(input, valid)
@@ -52,7 +52,7 @@ func Decode_bencoded_val_as_interface(input string) ([]interface{}, error) {
 	return result, nil
 }
 
-// Decodes bencoded value in JSON format and return a array of bytes
+// Decode_bencoded_val_as_JSON takes a bencoded string, decodes it, and returns the result in JSON format.
 func Decode_bencoded_val_as_JSON(input string) ([]byte, error) {
 	result, err := Decode_bencoded_val_as_interface(input)
 
@@ -69,7 +69,7 @@ func Decode_bencoded_val_as_JSON(input string) ([]byte, error) {
 	return json_res, nil
 }
 
-// Input a Bencoded value and prints the decoded value in JSON format
+// Print_Decoded_bencoded_val prompts the user for a bencoded string, decodes it, and prints the result in JSON format.
 func Print_Decoded_bencoded_val() {
 	var input string = ""
 	scanner := bufio.NewScanner(os.Stdin)
@@ -92,7 +92,7 @@ func Print_Decoded_bencoded_val() {
 	//constructing a valid array of the same length as input string
 	valid := make([]bool, len(input))
 
-	// //marking the integers and strings
+	//marking the integers and strings
 	processors.MarkStringAndInts(input, &valid)
 
 	result, err := processors.Decode(input, valid)
