@@ -1,3 +1,3 @@
-module github.com/xmp-er/bencodingParserGo
+module github.com/xmp-er/bpg
 
-go 1.21.3
+go 1.21

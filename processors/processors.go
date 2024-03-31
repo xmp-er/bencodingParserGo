@@ -6,9 +6,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/xmp-er/bencodingParserGo/validators"
+	"github.com/xmp-er/bpg/validators"
 )
 
+// Function to decode a bencoded string value
 func DecodeString(str string) (string, error) {
 	str = strings.TrimSpace(str)
 	s := strings.Split(str, ":")

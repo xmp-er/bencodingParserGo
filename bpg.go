@@ -1,4 +1,4 @@
-package main
+package bpg
 
 import (
 	"bufio"
@@ -7,12 +7,12 @@ import (
 	"os"
 	"strings"
 
-	"github.com/xmp-er/bencodingParserGo/processors"
-	"github.com/xmp-er/bencodingParserGo/validators"
+	"github.com/xmp-er/bpg/processors"
+	"github.com/xmp-er/bpg/validators"
 )
 
 // Encode_bencoded_val takes a byte slice of JSON and returns its bencoded string representation along with any error encountered.
-func Encode_bencoded_val(input []byte) (string, error) {
+func EncodeVal(input []byte) (string, error) {
 	var decoded_res map[string]interface{} //decoded result
 
 	//unmarshal the json into a map
@@ -35,7 +35,7 @@ func Encode_bencoded_val(input []byte) (string, error) {
 }
 
 // Decode_bencoded_val_as_interface takes a bencoded string and decodes it into an array of interfaces.
-func Decode_bencoded_val_as_interface(input string) ([]interface{}, error) {
+func DecodeValAsInterface(input string) ([]interface{}, error) {
 	//constructing a valid array of the same length as input string
 	valid := make([]bool, len(input))
 
@@ -53,8 +53,8 @@ func Decode_bencoded_val_as_interface(input string) ([]interface{}, error) {
 }
 
 // Decode_bencoded_val_as_JSON takes a bencoded string, decodes it, and returns the result in JSON format.
-func Decode_bencoded_val_as_JSON(input string) ([]byte, error) {
-	result, err := Decode_bencoded_val_as_interface(input)
+func DecodeValAsJSON(input string) ([]byte, error) {
+	result, err := DecodeValAsInterface(input)
 
 	if err != nil {
 		fmt.Println("Error in decoding value ", err)
@@ -70,7 +70,7 @@ func Decode_bencoded_val_as_JSON(input string) ([]byte, error) {
 }
 
 // Print_Decoded_bencoded_val prompts the user for a bencoded string, decodes it, and prints the result in JSON format.
-func Print_Decoded_bencoded_val() {
+func PtDecodedVal() {
 	var input string = ""
 	scanner := bufio.NewScanner(os.Stdin)
 
