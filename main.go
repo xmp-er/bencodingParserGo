@@ -11,10 +11,30 @@ import (
 	"github.com/xmp-er/bencodingParserGo/validators"
 )
 
-func Encode_bencoded_val([]byte) (string, error) {
-	//temp
+// Encodes bencoded value in JSON format and returns a string
+func Encode_bencoded_val(input []byte) (string, error) {
+	var decoded_res map[string]interface{} //decoded result
+
+	//unmarshal the json into a map
+	err := json.Unmarshal(input, &decoded_res)
+
+	if err != nil {
+		fmt.Println("Error unmarshaling the json value ", err)
+		return "", err
+	}
+
+	//encode the map into bencoded
+	result, err := processors.Encode_Dictionary(decoded_res)
+
+	if err != nil {
+		fmt.Println("Error decoding the dictionary ", err)
+		return "", err
+	}
+
+	return result, nil
 }
 
+// Decodes bencoded value and returns a interface array
 func Decode_bencoded_val_as_interface(input string) ([]interface{}, error) {
 	//constructing a valid array of the same length as input string
 	valid := make([]bool, len(input))
@@ -32,6 +52,7 @@ func Decode_bencoded_val_as_interface(input string) ([]interface{}, error) {
 	return result, nil
 }
 
+// Decodes bencoded value in JSON format and return a array of bytes
 func Decode_bencoded_val_as_JSON(input string) ([]byte, error) {
 	result, err := Decode_bencoded_val_as_interface(input)
 
@@ -48,6 +69,7 @@ func Decode_bencoded_val_as_JSON(input string) ([]byte, error) {
 	return json_res, nil
 }
 
+// Input a Bencoded value and prints the decoded value in JSON format
 func Print_Decoded_bencoded_val() {
 	var input string = ""
 	scanner := bufio.NewScanner(os.Stdin)

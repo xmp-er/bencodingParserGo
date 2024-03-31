@@ -2,6 +2,7 @@ package processors
 
 import (
 	"errors"
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -306,4 +307,98 @@ func MarkStringAndInts(str string, valid *[]bool) {
 			}
 		}
 	}
+}
+
+//encoding commands
+
+func Encode_string(str string) (string, error) {
+	return fmt.Sprint(len(str)) + ":" + str, nil
+}
+
+func Encode_int(i int) (string, error) {
+	tmp := fmt.Sprint(i)
+	return "i" + tmp + "e", nil
+}
+
+func Encode_List(list []interface{}) (string, error) {
+	res := "l"
+	for _, v := range list {
+		_, is_string := v.(string)
+		if is_string {
+			temp_decoded_int_check, err := strconv.Atoi(v.(string))
+			if err == nil {
+				v = temp_decoded_int_check
+			}
+		}
+		switch v.(type) {
+		case string:
+			temp, err := Encode_string(v.(string))
+			if err != nil {
+				return "", err
+			}
+			res += temp
+		case int:
+			temp, err := Encode_int(v.(int))
+			if err != nil {
+				return "", err
+			}
+			res += temp
+		case []interface{}:
+			temp, err := Encode_List(v.([]interface{}))
+			if err != nil {
+				return "", err
+			}
+			res += temp
+		case map[string]interface{}:
+			temp, err := Encode_Dictionary(v.(map[string]interface{}))
+			if err != nil {
+				return "", err
+			}
+			res += temp
+		}
+	}
+	return res + "e", nil
+}
+
+func Encode_Dictionary(dict map[string]interface{}) (string, error) {
+	res := "d"
+	for k, v := range dict {
+		_, is_string := v.(string)
+		if is_string {
+			temp_decoded_int_check, err := strconv.Atoi(v.(string))
+			if err == nil {
+				v = temp_decoded_int_check
+			}
+		}
+		var encoded_value string = ""
+		var err error
+		switch v.(type) {
+		case string:
+			encoded_value, err = Encode_string(v.(string))
+			if err != nil {
+				return "", err
+			}
+		case int:
+			encoded_value, err = Encode_int(v.(int))
+			if err != nil {
+				return "", err
+			}
+		case []interface{}:
+			encoded_value, err = Encode_List(v.([]interface{}))
+			if err != nil {
+				return "", err
+			}
+		case map[string]interface{}:
+			encoded_value, err = Encode_Dictionary(v.(map[string]interface{}))
+			if err != nil {
+				return "", err
+			}
+		}
+		encoded_key, err := Encode_string(k)
+		if err != nil {
+			return "", err
+		}
+		res += (encoded_key + encoded_value)
+	}
+	return res + "e", nil
 }
