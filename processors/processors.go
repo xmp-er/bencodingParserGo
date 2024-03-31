@@ -1,3 +1,4 @@
+// This file contains the functions for encoding and decoding bencoded strings.
 package processors
 
 import (
@@ -19,6 +20,7 @@ func DecodeString(str string) (string, error) {
 	return s[1], nil
 }
 
+// Function to decode an integer from a bencoded string
 func DecodeInt(str string) (string, error) {
 	if !validators.IsValidInt(str) {
 		return "", errors.New("input for integer is not valid, corrupted data")
@@ -26,6 +28,7 @@ func DecodeInt(str string) (string, error) {
 	return str[1 : len(str)-1], nil
 }
 
+// Function to decode a list from a bencoded string
 func DecodeList(str string, valid []bool) ([]interface{}, error) {
 	var ret []interface{}
 	for i := 0; i < len(str); i++ {
@@ -126,6 +129,7 @@ func DecodeList(str string, valid []bool) ([]interface{}, error) {
 	return ret, nil
 }
 
+// Function to decode a dictionary from a bencoded string
 func DecodeDictionary(str string, valid []bool) (map[string]interface{}, error) {
 	m := make(map[string]interface{})
 	k := true
@@ -268,10 +272,12 @@ func DecodeDictionary(str string, valid []bool) (map[string]interface{}, error) 
 	return m, nil
 }
 
+// Function to decode a bencoded string
 func Decode(str string, valid []bool) ([]interface{}, error) {
 	return DecodeList(str, valid)
 }
 
+// Function to mark the valid characters in a bencoded string
 func MarkStringAndInts(str string, valid *[]bool) {
 	for i := 0; i < len(str); i++ {
 		v := string(str[i])
@@ -310,17 +316,18 @@ func MarkStringAndInts(str string, valid *[]bool) {
 	}
 }
 
-//encoding commands
-
+// Function to encode a string in bencoded format
 func Encode_string(str string) (string, error) {
 	return fmt.Sprint(len(str)) + ":" + str, nil
 }
 
+// Function to encode an integer in bencoded format
 func Encode_int(i int) (string, error) {
 	tmp := fmt.Sprint(i)
 	return "i" + tmp + "e", nil
 }
 
+// Function to encode a list in bencoded format
 func Encode_List(list []interface{}) (string, error) {
 	res := "l"
 	for _, v := range list {
@@ -361,6 +368,7 @@ func Encode_List(list []interface{}) (string, error) {
 	return res + "e", nil
 }
 
+// Function to encode a dictionary in bencoded format
 func Encode_Dictionary(dict map[string]interface{}) (string, error) {
 	res := "d"
 	for k, v := range dict {

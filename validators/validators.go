@@ -4,10 +4,12 @@ import (
 	"strconv"
 )
 
+// Function to validate the input string
 func IsValidInp(str []string) bool {
 	return len(str) == 1
 }
 
+// Function to validate the string in the format "<int>:<string>"
 func IsValidString(str []string) bool {
 	//string array length must be 3 in the format "<int>:<string>"
 
@@ -27,6 +29,7 @@ func IsValidString(str []string) bool {
 
 }
 
+// Function to validate the integer in the format "i<int>e"
 func IsValidInt(str string) bool {
 	// if the first digit is not i and the last digit is not e and the string between them is not a integer, return false
 	//tried something funny kek

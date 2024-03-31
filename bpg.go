@@ -11,7 +11,7 @@ import (
 	"github.com/xmp-er/bpg/validators"
 )
 
-// Encode_bencoded_val takes a byte slice of JSON and returns its bencoded string representation along with any error encountered.
+// Takes JSON as input and returns the bencoded value
 func EncodeVal(input []byte) (string, error) {
 	var decoded_res map[string]interface{} //decoded result
 
@@ -34,7 +34,7 @@ func EncodeVal(input []byte) (string, error) {
 	return result, nil
 }
 
-// Decode_bencoded_val_as_interface takes a bencoded string and decodes it into an array of interfaces.
+// Takes Bencoded string as input and returns the decoded value in JSON format
 func DecodeValAsInterface(input string) ([]interface{}, error) {
 	//constructing a valid array of the same length as input string
 	valid := make([]bool, len(input))
@@ -52,7 +52,7 @@ func DecodeValAsInterface(input string) ([]interface{}, error) {
 	return result, nil
 }
 
-// Decode_bencoded_val_as_JSON takes a bencoded string, decodes it, and returns the result in JSON format.
+// Takes Bencoded string as input and returns the decoded value in JSON format
 func DecodeValAsJSON(input string) ([]byte, error) {
 	result, err := DecodeValAsInterface(input)
 
@@ -69,7 +69,8 @@ func DecodeValAsJSON(input string) ([]byte, error) {
 	return json_res, nil
 }
 
-// Print_Decoded_bencoded_val prompts the user for a bencoded string, decodes it, and prints the result in JSON format.
+// - Takes a input string from via CLI
+// - Prints out the decoded value in Terminal
 func PtDecodedVal() {
 	var input string = ""
 	scanner := bufio.NewScanner(os.Stdin)
